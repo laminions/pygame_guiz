@@ -1,0 +1,81 @@
+import pygame, random
+
+pygame.init()
+pantalla = pygame.display.set_mode((800,400))
+reloj = pygame.time.Clock()
+
+AZ=(135,206,235); VER=(80,180,80); MAR=(120,70,20)
+NEG=(0,0,0); GRI=(170,170,170); OSC=(90,90,90); AMA=(250,210,60)
+
+x=0; humo=[]; font=pygame.font.SysFont("arial",20)
+
+while True:
+    reloj.tick(60)
+
+    for e in pygame.event.get():
+        if e.type==pygame.QUIT:
+            pygame.quit(); exit()
+
+    pantalla.fill(AZ)
+
+    pygame.draw.rect(pantalla,VER,(0,300,800,100))
+
+    pygame.draw.line(pantalla,NEG,(0,320),(800,320),4)
+    pygame.draw.line(pantalla,NEG,(0,350),(800,350),4)
+
+    for i in range(0,800,25):
+        pygame.draw.rect(pantalla,MAR,(i,315,15,40))
+
+    pygame.draw.circle(pantalla,AMA,(700,70),40)
+
+    # ================= TREN =================
+
+    pygame.draw.rect(pantalla,GRI,(x,190,180,80))      # cuerpo
+    pygame.draw.rect(pantalla,GRI,(x+110,120,70,70))   # cabina
+    pygame.draw.rect(pantalla,OSC,(x+95,100,90,20))     # techo
+
+    # frente tipo nariz (como imagen)
+    pygame.draw.circle(pantalla,OSC,(x-25,235),32)
+    pygame.draw.rect(pantalla,GRI,(x-25,205,25,60))
+
+    # ruedas grandes
+    pygame.draw.circle(pantalla,OSC,(x+45,280),20)
+    pygame.draw.circle(pantalla,OSC,(x+100,280),20)
+    pygame.draw.circle(pantalla,OSC,(x+155,280),20)
+
+    # barras ruedas
+    pygame.draw.rect(pantalla,OSC,(x+45,270,110,10))
+
+    # chimenea
+    chim=(x+20,135)
+    pygame.draw.rect(pantalla,OSC,(chim[0],chim[1],18,45))
+
+    # humo
+    if random.randint(1,4)==1:
+        humo.append([chim[0]+9,chim[1]])
+
+    nuevo=[]
+    for h in humo:
+        h[1]-=2
+        h[0]+=random.randint(-1,1)
+        pygame.draw.circle(pantalla,(210,210,210),(h[0],h[1]),7)
+        if h[1]>0:nuevo.append(h)
+    humo=nuevo
+
+    # cara del tren
+    cx,cy=x+135,165
+    pygame.draw.circle(pantalla,(255,220,80),(cx,cy),25)
+    pygame.draw.circle(pantalla,NEG,(cx-8,cy-5),4)
+    pygame.draw.circle(pantalla,NEG,(cx+8,cy-5),4)
+    pygame.draw.circle(pantalla,NEG,(cx,cy+6),4)
+
+    # nombre
+    txt=font.render("TU NOMBRE",1,NEG)
+    pantalla.blit(txt,(x+70,235))
+
+    # movimiento derecho
+    x+=3
+    if x>850:
+        x=-250
+
+    pygame.display.update()
